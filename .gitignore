@@ -1,0 +1,5 @@
+Constants.py
+.DS_Store
+venv/
+training/football-players-detection-1/
+models/
