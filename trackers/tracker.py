@@ -5,6 +5,7 @@ import os
 import sys
 import cv2
 import numpy as np
+from tqdm import tqdm
 
 sys.path.append("../")
 from utils import get_bbox_center, get_bbox_width
@@ -16,10 +17,14 @@ class Tracker:
         self.tracker = sv.ByteTrack()
 
     def detect_frames(self, frames):
-        batch_size = 20
+        batch_size = 1
         detections = []
-        for i in range(0, len(frames), batch_size):
-            batch_detections = self.model.predict(frames[i : i + batch_size], conf=0.1)
+        for i in tqdm(
+            range(0, len(frames), batch_size), desc="Object Detection Inference"
+        ):
+            batch_detections = self.model.predict(
+                frames[i : i + batch_size], conf=0.1, verbose=False
+            )
             detections += batch_detections
 
         return detections
@@ -61,7 +66,7 @@ class Tracker:
                 if cls_id == cls_names_inv["player"]:
                     tracks["players"][frame_num][track_id] = {"bbox": bbox}
                 if cls_id == cls_names_inv["referee"]:
-                    tracks["players"][frame_num][track_id] = {"bbox": bbox}
+                    tracks["referees"][frame_num][track_id] = {"bbox": bbox}
 
             for frame_detection in detection_supervision:
                 bbox = frame_detection[0].tolist()
@@ -176,7 +181,7 @@ class Tracker:
 
             # Draw circles for referees
             for track_id, referee in referee_dict.items():
-                frame = self.draw_ellipse(frame, referee["bbox"], (0, 0, 0), track_id)
+                frame = self.draw_ellipse(frame, referee["bbox"], (0, 0, 0))
 
             # Draw symbol
             for track_id, ball in ball_dict.items():
