@@ -175,9 +175,8 @@ class Tracker:
 
             # Draw circles for players
             for track_id, player in player_dict.items():
-                frame = self.draw_ellipse(
-                    frame, player["bbox"], (255, 255, 255), track_id
-                )
+                color = player.get("team_color", (0, 0, 255))
+                frame = self.draw_ellipse(frame, player["bbox"], color, track_id)
 
             # Draw circles for referees
             for track_id, referee in referee_dict.items():
