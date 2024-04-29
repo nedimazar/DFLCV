@@ -3,3 +3,4 @@ Constants.py
 venv/
 training/football-players-detection-1/
 models/
+__pycache__/
