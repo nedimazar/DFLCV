@@ -107,12 +107,13 @@ class Tracker:
         cv2.ellipse(
             img=frame,
             center=(x_center, y2),
-            axes=(int(width), int(0.35 * width)),
+            # axes=(int(width), int(0.35 * width)),
+            axes=(int(50), int(0.35 * 50)),
             angle=0.0,
             startAngle=-45,
             endAngle=235,
             color=color,
-            thickness=2,
+            thickness=3,
             lineType=cv2.LINE_4,
         )
 
