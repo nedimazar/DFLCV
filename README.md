@@ -1,7 +1,7 @@
 # Football Analytics with Computer Vision ⚽️🦾
 This repository implements a Computer Vision pipeline that annotates football videos. 
 
-![Sample output from the Computer Vision pipeline.](screenshots/caprure-01.gif)
+![Sample output from the Computer Vision pipeline.](screenshots/capture-01.gif)
 
 ## Pipeline
 * [ultralytics YOLOv5XL](https://github.com/ultralytics/yolov5) was fine-tuned with the [roboflow football-players-detection Image Dataset](https://github.com/ultralytics/yolov5). Check notebook `training/football_training_yolov5.ipynb`.
