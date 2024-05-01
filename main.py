@@ -1,10 +1,11 @@
 from utils import read_video, save_video
 from trackers import Tracker
 from team_assigner import TeamAssigner
+from player_ball_assignment import PlayerBallAssigner
 
 
 def main():
-    input_video_name = "short.mp4"
+    input_video_name = "DFL.mp4"
     base_name = input_video_name.split(".")[0]
     input_video_path = f"input_videos/{input_video_name}"
     stub_path = f"stubs/{base_name}.pkl"
@@ -23,6 +24,15 @@ def main():
     team_assigner = TeamAssigner()
     team_assigner.assign_team_color(video_frames[0], tracks["players"][0])
     tracks = team_assigner.assign_teams_to_players(video_frames, tracks)
+
+    # Assign ball possession
+    player_assigner = PlayerBallAssigner()
+    for frame_num, player_track in enumerate(tracks["players"]):
+        ball_bbox = tracks["ball"][frame_num][1]["bbox"]
+        assigned_player = player_assigner.assign_ball_to_player(player_track, ball_bbox)
+
+        if assigned_player:
+            tracks["players"][frame_num][assigned_player]["has_ball"] = True
 
     # Draw object tracks
     output_video_frames = tracker.annotate_frames(

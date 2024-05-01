@@ -147,7 +147,7 @@ class Tracker:
 
         return frame
 
-    def draw_triangle(self, frame, bbox):
+    def draw_triangle(self, frame, bbox, color=(255, 255, 255)):
         y = int(bbox[1])
         x, _ = get_bbox_center(bbox)
 
@@ -164,7 +164,7 @@ class Tracker:
             image=frame,
             contours=[triangle_points],
             contourIdx=0,
-            color=(255, 255, 255),
+            color=color,
             thickness=cv2.FILLED,
         )
 
@@ -193,6 +193,9 @@ class Tracker:
             for track_id, player in player_dict.items():
                 color = player.get("team_color", (0, 0, 255))
                 frame = self.draw_ellipse(frame, player["bbox"], color, track_id)
+
+                if player.get("has_ball", False):
+                    frame = self.draw_triangle(frame, player["bbox"], color=(0, 0, 255))
 
             # Draw circles for referees
             for track_id, referee in referee_dict.items():
