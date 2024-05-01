@@ -4,3 +4,12 @@ venv/
 training/football-players-detection-1/
 models/
 __pycache__/
+
+# Ignore all videos and stubs
+input_videos/*
+output_videos/*
+stubs/*
+# But do not ignore short
+!input_videos/short.mp4
+!output_videos/short.avi
+!stubs/short.pkl
