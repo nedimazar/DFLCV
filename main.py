@@ -26,13 +26,8 @@ def main():
     tracks = team_assigner.assign_teams_to_players(video_frames, tracks)
 
     # Assign ball possession
-    player_assigner = PlayerBallAssigner()
-    for frame_num, player_track in enumerate(tracks["players"]):
-        ball_bbox = tracks["ball"][frame_num][1]["bbox"]
-        assigned_player = player_assigner.assign_ball_to_player(player_track, ball_bbox)
-
-        if assigned_player:
-            tracks["players"][frame_num][assigned_player]["has_ball"] = True
+    player_ball_assigner = PlayerBallAssigner()
+    tracks = player_ball_assigner.assign_ball_to_players(tracks)
 
     # Draw object tracks
     output_video_frames = tracker.annotate_frames(

@@ -1,3 +1,4 @@
+import copy
 from utils import get_bbox_center, measure_distance
 
 
@@ -28,3 +29,13 @@ class PlayerBallAssigner:
                     assigned_player = player_id
 
         return assigned_player
+
+    def assign_ball_to_players(self, tracks):
+        updated_tracks = copy.deepcopy(tracks)
+        for frame_num, player_track in enumerate(tracks["players"]):
+            ball_bbox = tracks["ball"][frame_num][1]["bbox"]
+            assigned_player = self.assign_ball_to_player(player_track, ball_bbox)
+
+            if assigned_player:
+                updated_tracks["players"][frame_num][assigned_player]["has_ball"] = True
+        return updated_tracks
