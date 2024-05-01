@@ -4,13 +4,17 @@ from team_assigner import TeamAssigner
 
 
 def main():
-    video_frames = read_video("input_videos/short.mp4")
+    input_video_name = "short.mp4"
+    base_name = input_video_name.split(".")[0]
+    input_video_path = f"input_videos/{input_video_name}"
+    stub_path = f"stubs/{base_name}.pkl"
+    output_video_path = f"output_videos/{base_name}.avi"
+
+    video_frames = read_video(input_video_path)
 
     # Initializing a tracker
     tracker = Tracker("models/best.pt")
-    tracks = tracker.get_object_tracks(
-        video_frames, read_from_stub=False, stub_path="stubs/short.pkl"
-    )
+    tracks = tracker.get_object_tracks(video_frames, stub_path=stub_path)
 
     # Interpolate missing ball positions
     tracks["ball"] = tracker.interpolate_ball_positions(tracks["ball"])
@@ -25,7 +29,7 @@ def main():
         video_frames=video_frames, tracks=tracks
     )
 
-    save_video(output_video_frames, "output_videos/short.avi")
+    save_video(output_video_frames, output_video_path)
 
 
 if __name__ == "__main__":

@@ -7,8 +7,6 @@ import cv2
 import numpy as np
 from tqdm import tqdm
 import pandas as pd
-
-# sys.path.append("../")
 from utils import get_bbox_center, get_bbox_width
 
 
@@ -45,8 +43,8 @@ class Tracker:
 
         return detections
 
-    def get_object_tracks(self, frames, read_from_stub=False, stub_path=None):
-        if read_from_stub and stub_path and os.path.exists(stub_path):
+    def get_object_tracks(self, frames, stub_path=None):
+        if stub_path and os.path.exists(stub_path):
             with open(stub_path, "rb") as f:
                 return pickle.load(f)
 
@@ -91,7 +89,8 @@ class Tracker:
                 if cls_id == cls_names_inv["ball"]:
                     tracks["ball"][frame_num][1] = {"bbox": bbox}
 
-        if stub_path is not None:
+        if stub_path:
+            os.makedirs(os.path.dirname(stub_path), exist_ok=True)
             with open(stub_path, "wb") as f:
                 pickle.dump(tracks, f)
 
