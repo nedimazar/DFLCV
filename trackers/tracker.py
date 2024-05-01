@@ -8,7 +8,7 @@ import numpy as np
 from tqdm import tqdm
 import pandas as pd
 
-sys.path.append("../")
+# sys.path.append("../")
 from utils import get_bbox_center, get_bbox_width
 
 
@@ -33,8 +33,7 @@ class Tracker:
 
         return ball_positions
 
-    def detect_frames(self, frames):
-        batch_size = 1
+    def detect_frames(self, frames, batch_size=1):
         detections = []
         for i in tqdm(
             range(0, len(frames), batch_size), desc="Object Detection Inference"
@@ -46,8 +45,8 @@ class Tracker:
 
         return detections
 
-    def get_object_tracks(self, frames, read_from_stup=False, stub_path=None):
-        if read_from_stup and stub_path and os.path.exists(stub_path):
+    def get_object_tracks(self, frames, read_from_stub=False, stub_path=None):
+        if read_from_stub and stub_path and os.path.exists(stub_path):
             with open(stub_path, "rb") as f:
                 return pickle.load(f)
 

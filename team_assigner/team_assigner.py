@@ -1,4 +1,5 @@
 from sklearn.cluster import KMeans
+import copy
 
 
 class TeamAssigner:
@@ -74,3 +75,16 @@ class TeamAssigner:
         self.player_team_dict[player_id] = team_id
 
         return team_id
+
+    def assign_teams_to_players(self, video_frames, tracks):
+        updated_tracks = copy.deepcopy(tracks)
+
+        for frame_num, player_track in enumerate(updated_tracks["players"]):
+            for player_id, track in player_track.items():
+                team = self.get_player_team(
+                    video_frames[frame_num], track["bbox"], player_id
+                )
+                track["team"] = team
+                track["team_color"] = self.team_colors[team]
+
+        return updated_tracks

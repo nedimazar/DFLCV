@@ -4,13 +4,12 @@ from team_assigner import TeamAssigner
 
 
 def main():
-    video_frames = read_video("input_videos/test.avi")
-    video_frames = video_frames[:920]
+    video_frames = read_video("input_videos/short.mp4")
 
     # Initializing a tracker
     tracker = Tracker("models/best.pt")
     tracks = tracker.get_object_tracks(
-        video_frames, read_from_stup=True, stub_path="stubs/track_stubs.pkl"
+        video_frames, read_from_stub=False, stub_path="stubs/short.pkl"
     )
 
     # Interpolate missing ball positions
@@ -19,23 +18,14 @@ def main():
     # Assign player teams
     team_assigner = TeamAssigner()
     team_assigner.assign_team_color(video_frames[0], tracks["players"][0])
-
-    for frame_num, player_track in enumerate(tracks["players"]):
-        for player_id, track in player_track.items():
-            team = team_assigner.get_player_team(
-                video_frames[frame_num], track["bbox"], player_id
-            )
-            tracks["players"][frame_num][player_id]["team"] = team
-            tracks["players"][frame_num][player_id]["team_color"] = (
-                team_assigner.team_colors[team]
-            )
+    tracks = team_assigner.assign_teams_to_players(video_frames, tracks)
 
     # Draw object tracks
     output_video_frames = tracker.annotate_frames(
         video_frames=video_frames, tracks=tracks
     )
 
-    save_video(output_video_frames, "output_videos/test.avi")
+    save_video(output_video_frames, "output_videos/short.avi")
 
 
 if __name__ == "__main__":
