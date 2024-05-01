@@ -2,6 +2,7 @@ from utils import read_video, save_video
 from trackers import Tracker
 from team_assigner import TeamAssigner
 from player_ball_assignment import PlayerBallAssigner
+from team_possession import TeamPossession
 
 
 def main():
@@ -29,9 +30,13 @@ def main():
     player_ball_assigner = PlayerBallAssigner()
     tracks = player_ball_assigner.assign_ball_to_players(tracks)
 
+    # Get team possession
+    team_possesion_assigner = TeamPossession()
+    team_possession = team_possesion_assigner.get_team_possession(tracks)
+
     # Draw object tracks
     output_video_frames = tracker.annotate_frames(
-        video_frames=video_frames, tracks=tracks
+        video_frames=video_frames, tracks=tracks, team_possession=team_possession
     )
 
     save_video(output_video_frames, output_video_path)

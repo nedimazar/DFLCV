@@ -2,7 +2,6 @@ from ultralytics import YOLO
 import supervision as sv
 import pickle
 import os
-import sys
 import cv2
 import numpy as np
 from tqdm import tqdm
@@ -105,8 +104,8 @@ class Tracker:
         cv2.ellipse(
             img=frame,
             center=(x_center, y2),
-            # axes=(int(width), int(0.35 * width)),
-            axes=(int(50), int(0.35 * 50)),
+            axes=(int(width), int(0.35 * width)),
+            # axes=(int(50), int(0.35 * 50)),
             angle=0.0,
             startAngle=-45,
             endAngle=235,
@@ -179,7 +178,41 @@ class Tracker:
 
         return frame
 
-    def annotate_frames(self, video_frames, tracks):
+    def draw_team_possession(self, frame, frame_num, team_possession):
+        # Draw a window
+        overlay = frame.copy()
+        cv2.rectangle(overlay, (1350, 850), (1900, 970), (255, 255, 255), cv2.FILLED)
+        alpha = 0.4
+        cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
+
+        team_possession_till_frame = team_possession[: frame_num + 1]
+        team_1_num_frames = team_possession_till_frame.count(1)
+        team_2_num_frames = team_possession_till_frame.count(2)
+
+        team_1_possession = team_1_num_frames / (team_1_num_frames + team_2_num_frames)
+        team_2_possession = team_2_num_frames / (team_1_num_frames + team_2_num_frames)
+
+        cv2.putText(
+            frame,
+            f"Team 1 Possesion: {team_1_possession * 100:.2f}%",
+            (1400, 900),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1,
+            (0, 0, 0),
+            3,
+        )
+        cv2.putText(
+            frame,
+            f"Team 2 Possesion: {team_2_possession * 100:.2f}%",
+            (1400, 950),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1,
+            (0, 0, 0),
+            3,
+        )
+        return frame
+
+    def annotate_frames(self, video_frames, tracks, team_possession):
         output_video_frames = []
 
         for i, frame in enumerate(video_frames):
@@ -204,6 +237,9 @@ class Tracker:
             # Draw symbol
             for track_id, ball in ball_dict.items():
                 frame = self.draw_triangle(frame, ball["bbox"])
+
+            # Draw team possession
+            frame = self.draw_team_possession(frame, i, team_possession)
 
             output_video_frames.append(frame)
         return output_video_frames
