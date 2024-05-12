@@ -6,7 +6,7 @@ from team_possession import TeamPossession
 
 
 def main():
-    input_video_name = "DFL.mp4"
+    input_video_name = "short.mp4"
     base_name = input_video_name.split(".")[0]
     input_video_path = f"input_videos/{input_video_name}"
     stub_path = f"stubs/{base_name}.pkl"
